@@ -61,8 +61,11 @@ def insert_earthquake_data(data: Dict, cursor) -> None:
         cursor: Active psycopg2 cursor.
     """
     logger.info("Ensuring raw_earthquakes table exists...")
+    # Create schema if it doesn't exist
+    cursor.execute("CREATE SCHEMA IF NOT EXISTS raw_data")
+    # Create table inside the raw_data schema
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS raw_earthquakes (
+        CREATE TABLE IF NOT EXISTS raw_data.raw_earthquakes (
             id TEXT PRIMARY KEY,
             time TIMESTAMP,
             place TEXT,
@@ -77,7 +80,7 @@ def insert_earthquake_data(data: Dict, cursor) -> None:
     """)
 
     insert_query = """
-        INSERT INTO raw_earthquakes (
+        INSERT INTO raw_data.raw_earthquakes (
             id, time, place, magnitude, longitude, latitude, depth_km, url, raw_json
         )
         VALUES (

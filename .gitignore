@@ -1,4 +1,18 @@
-.env
-.idea/
+# Virtual environments
 venv/
+
+# Airflow specific files
+airflow-webserver.pid
+airflow.cfg
+logs/
+webserver_config.py
+
+
+# Python specific files and directories
+__pycache__/
+
+# Development environments/tools
+.idea/
+
+.env
 requirements.txt

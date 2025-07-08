@@ -1,6 +1,25 @@
-version: '3.8'
+version: "3.8"
+
+x-airflow-common:
+  &airflow-common
+  image: apache/airflow:2.8.1-python3.10
+  environment:
+    &airflow-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__FERNET_KEY: ''
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${DB_USER}:${DB_PASS}@postgres:5432/${DB_NAME}
+    AIRFLOW__WEBSERVER__SECRET_KEY: temporary_secret_key
+    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'true'
+    AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/airflow/dags
+  volumes:
+    - ./:/opt/airflow        # Mount entire project root
+  depends_on:
+    - postgres
 
 services:
+  #  Postgres DB
   postgres:
     image: postgres:15
     container_name: earthquake-postgres
@@ -14,6 +33,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  #  pgAdmin UI
   pgadmin:
     image: dpage/pgadmin4
     container_name: earthquake-pgadmin
@@ -27,6 +47,47 @@ services:
       - postgres
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+
+  #  Airflow Services
+  airflow-webserver:
+    <<: *airflow-common
+    container_name: airflow-webserver
+    ports:
+      - "8081:8080"
+    command: webserver
+    volumes:
+      - ./:/opt/airflow
+
+  airflow-scheduler:
+    <<: *airflow-common
+    container_name: airflow-scheduler
+    command: scheduler
+    volumes:
+      - ./:/opt/airflow
+
+  airflow-worker:
+    <<: *airflow-common
+    container_name: airflow-worker
+    command: celery worker
+    volumes:
+      - ./:/opt/airflow
+
+  airflow-triggerer:
+    <<: *airflow-common
+    container_name: airflow-triggerer
+    command: triggerer
+    volumes:
+      - ./:/opt/airflow
+
+  #  Airflow Init (creates admin user)
+  airflow-init:
+    <<: *airflow-common
+    container_name: airflow-init
+    command: >
+      bash -c "airflow db migrate &&
+               airflow users create --username $AIRFLOW_ADMIN_USERNAME --firstname $AIRFLOW_ADMIN_FIRSTNAME --lastname $AIRFLOW_ADMIN_LASTNAME --role Admin --email $AIRFLOW_ADMIN_EMAIL --password $AIRFLOW_ADMIN_PASSWORD"
+    volumes:
+      - ./:/opt/airflow
 
 volumes:
   pgdata:
