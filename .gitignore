@@ -16,3 +16,10 @@ __pycache__/
 
 .env
 requirements.txt
+
+#dbt files
+dbt/dbt_packages/
+dbt/target/
+dbt/logs/
+dbt/.user.yml
+dbt/earthquake_dbt/.gitignore

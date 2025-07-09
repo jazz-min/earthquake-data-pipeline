@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: stg_earthquakes
+    description: "Cleaned and typed staging table for earthquakes"
+    columns:
+      - name: id
+        description: "Unique ID of the earthquake event"
+        tests:
+          - not_null
+          - unique
+      - name: time
+        description: "Timestamp of the earthquake occurrence"
+        tests:
+          - not_null
+      - name: date
+        description: "Date portion extracted from time"
+      - name: year_month
+        description: "Year and month for grouping"
+      - name: hour
+        description: "Hour of the day the earthquake occurred"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+      - name: place
+        description: "Location description of the earthquake"
+      - name: magnitude
+        description: "Richter magnitude scale value"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0.0
+              max_value: 10.0
+      - name: latitude
+        description: "Latitude coordinate of the epicenter"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: -90
+              max_value: 90
+      - name: longitude
+        description: "Longitude coordinate of the epicenter"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: -180
+              max_value: 180
+      - name: depth_km
+        description: "Depth of the earthquake in kilometers"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: url
+        description: "USGS event URL"

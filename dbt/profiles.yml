@@ -1,0 +1,12 @@
+earthquake_dbt:
+  outputs:
+    dev:
+      type: postgres
+      dbname: "{{ env_var('DB_NAME') }}"
+      host: "{{ env_var('DB_HOST') }}"
+      user: "{{ env_var('DB_USER') }}"
+      pass: "{{ env_var('DB_PASS') }}"
+      port: "{{ env_var('DB_PORT') | int  }}"
+      schema: "{{ env_var('DB_SCHEMA') }}"
+      threads: 4
+  target: dev

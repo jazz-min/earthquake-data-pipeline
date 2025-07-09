@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: agg_daily_counts
+    description: "Aggregated count of earthquakes per day"
+    columns:
+      - name: date
+        description: "Date of the earthquake occurrences"
+      - name: quake_count
+        description: "Number of earthquakes on the given date"
+
+  - name: agg_top10_magnitude
+    description: "Top 10 strongest earthquakes by magnitude"
+    columns:
+      - name: id
+        description: "Unique ID of the earthquake"
+      - name: time
+        description: "Timestamp of the earthquake"
+      - name: place
+        description: "Location of the earthquake"
+      - name: magnitude
+        description: "Magnitude of the earthquake"
+
+  - name: agg_magnitude_distribution
+    description: "Histogram-style frequency of earthquake magnitudes"
+    columns:
+      - name: magnitude
+        description: "Magnitude bucket"
+      - name: freq
+        description: "Number of earthquakes with this magnitude"
+
+  - name: agg_heatmap_region_month
+    description: "Monthly earthquake counts per region for heatmap charts"
+    columns:
+      - name: place
+        description: "Location or region name"
+      - name: year_month
+        description: "Month (YYYY-MM)"
+      - name: quake_count
+        description: "Number of earthquakes in that region/month"
+
+  - name: agg_high_mag_percent
+    description: "Percentage of earthquakes with magnitude >= 5.0"
+    columns:
+      - name: high_mag_pct
+        description: "Percentage of high-magnitude earthquakes"
+
+  - name: avg_depth_by_region
+    description: "Average depth of earthquakes by region"
+    columns:
+      - name: place
+        description: "Region/location name"
+      - name: avg_depth_km
+        description: "Average earthquake depth in kilometers"

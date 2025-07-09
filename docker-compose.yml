@@ -89,6 +89,22 @@ services:
     volumes:
       - ./:/opt/airflow
 
+  # dbt
+  dbt:
+    image: dbt-postgres-arm64 #ghcr.io/dbt-labs/dbt-postgres:1.9.0
+    container_name: dbt
+    volumes:
+      - ./dbt:/usr/app
+    working_dir: /usr/app
+    environment:
+      DBT_PROFILES_DIR: /usr/app
+    env_file:
+      - .env
+    ports:
+      - "8088:8088" # since using 8088 to serve the docs instead of default 8080
+    depends_on:
+      - postgres
+    entrypoint: [ "tail", "-f", "/dev/null" ]  # keeps container running
 volumes:
   pgdata:
   pgadmin-data:
