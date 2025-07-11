@@ -6,7 +6,7 @@ import os
 import json
 
 # Add root path to import fetch_usgs_data
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
 from fetch_usgs_data import fetch_earthquake_data, insert_earthquake_data
 import psycopg2
