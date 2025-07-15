@@ -63,21 +63,25 @@ services:
     ports:
       - "8081:8080"
     command: webserver
+    restart: always
 
   airflow-scheduler:
     <<: *airflow-common
     container_name: airflow-scheduler
     command: scheduler
+    restart: always
 
   airflow-worker:
     <<: *airflow-common
     container_name: airflow-worker
     command: celery worker
+    restart: always
 
   airflow-triggerer:
     <<: *airflow-common
     container_name: airflow-triggerer
     command: triggerer
+    restart: always
 
   #  Airflow Init (creates admin user)
   airflow-init:
@@ -86,6 +90,47 @@ services:
     command: >
       bash -c "airflow db migrate &&
                airflow users create --username $AIRFLOW_ADMIN_USERNAME --firstname $AIRFLOW_ADMIN_FIRSTNAME --lastname $AIRFLOW_ADMIN_LASTNAME --role Admin --email $AIRFLOW_ADMIN_EMAIL --password $AIRFLOW_ADMIN_PASSWORD"
+ # Superset
+  superset-db:
+      image: postgres:15
+      container_name: superset-db
+      restart: always
+      env_file:
+        - .env
+      environment:
+        POSTGRES_USER: ${SUPERSET_DB_USER}
+        POSTGRES_PASSWORD: ${SUPERSET_DB_PASSWORD}
+        POSTGRES_DB: ${SUPERSET_DB_NAME}
+      volumes:
+        - superset-db-data:/var/lib/postgresql/data
+      ports:
+        - "${SUPERSET_DB_PORT:-5433}:5432"
+      platform: linux/arm64/v8  # for M1/M2 Mac
+
+  superset:
+    build:
+      context: .
+      dockerfile: Dockerfile.superset
+    image: custom-superset:latest
+    container_name: superset
+    restart: always
+    env_file:
+      - .env
+    environment:
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
+      DATABASE_URL: postgresql+psycopg2://${SUPERSET_DB_USER}:${SUPERSET_DB_PASSWORD}@superset-db:5432/${SUPERSET_DB_NAME}
+    platform: linux/arm64/v8  # for M1/M2 Mac
+    volumes:
+      - superset-home:/app/superset_home
+      - ./superset/superset-init.sh:/app/superset-init.sh
+    entrypoint: ["/bin/bash", "/app/superset-init.sh"]
+    ports:
+      - "8089:8088"
+    depends_on:
+      - superset-db
+
 volumes:
   pgdata:
   pgadmin-data:
+  superset-db-data:
+  superset-home:
