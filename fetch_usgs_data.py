@@ -26,27 +26,33 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def fetch_earthquake_data(days_back: int = 7, min_magnitude: float = 4.5) -> Dict:
+def fetch_earthquake_data(**context):
     """
-    Fetch earthquake data from USGS Earthquake API.
-    Args:
-        days_back (int): How many days back to fetch data.
-        min_magnitude (float): Minimum magnitude to filter earthquakes.
+    Fetch earthquake data from USGS Earthquake API with configurable date range and magnitude
     Returns:
         dict: Parsed JSON response (GeoJSON format).
     """
-    end_date = datetime.utcnow()
-    start_date = end_date - timedelta(days=days_back)
+    dag_conf = context.get("dag_run").conf or {}
+
+    start_date = dag_conf.get("start_date")
+    end_date = dag_conf.get("end_date")
+    min_magnitude = float(dag_conf.get("min_magnitude", 4.5))
+    # Use default if no dates are passed
+    if not start_date or not end_date:
+        end = datetime.utcnow()
+        start = end - timedelta(days=7)
+        start_date = start.strftime('%Y-%m-%d')
+        end_date = end.strftime('%Y-%m-%d')
 
     url = "https://earthquake.usgs.gov/fdsnws/event/1/query"
     params = {
         "format": "geojson",
-        "starttime": start_date.strftime("%Y-%m-%d"),
-        "endtime": end_date.strftime("%Y-%m-%d"),
+        "starttime": start_date,
+        "endtime": end_date,
         "minmagnitude": min_magnitude
     }
 
-    logger.info(f"Fetching earthquake data from {start_date.date()} to {end_date.date()}...")
+    logger.info(f"Fetching earthquake data from {start_date} to {end_date}...")
     response = requests.get(url, params=params)
     response.raise_for_status()
     logger.info(f"Successfully fetched data.")

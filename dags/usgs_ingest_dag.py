@@ -17,6 +17,7 @@ load_dotenv()
 
 default_args = {
     "owner": "airflow",
+    'start_date': datetime(2023, 1, 1),
     "retries": 1,
     "retry_delay": timedelta(minutes=5),
 }
@@ -26,7 +27,6 @@ with DAG(
     default_args=default_args,
     description="ETL pipeline: fetch earthquake data and insert into Postgres",
     schedule_interval="@daily",
-    start_date=datetime(2024, 1, 1),
     catchup=False,
     tags=["earthquake", "usgs", "postgres"],
 ) as dag:
@@ -35,8 +35,9 @@ with DAG(
         """
         Fetch earthquake data and push it to XCom.
         """
-        data = fetch_earthquake_data()
+        data = fetch_earthquake_data(**context)
         # Store as JSON string (XCom only handles small, serializable data)
+        # Warning: XCom has size limits (~48KB). Large payloads can fail silently.
         context['ti'].xcom_push(key='earthquake_data', value=json.dumps(data))
 
     def load_data(**context):
@@ -46,31 +47,28 @@ with DAG(
         json_data = context['ti'].xcom_pull(task_ids='extract_earthquake_data', key='earthquake_data')
         data = json.loads(json_data)
 
-        conn = psycopg2.connect(
-            dbname=os.getenv("DB_NAME"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASS"),
-            host=os.getenv("DB_HOST"),
-            port=os.getenv("DB_PORT")
-        )
-        cursor = conn.cursor()
-
-        insert_earthquake_data(data, cursor)
-
-        conn.commit()
-        cursor.close()
-        conn.close()
+        try:
+            with psycopg2.connect(
+                    dbname=os.getenv("DB_NAME"),
+                    user=os.getenv("DB_USER"),
+                    password=os.getenv("DB_PASS"),
+                    host=os.getenv("DB_HOST"),
+                    port=os.getenv("DB_PORT")
+            ) as conn:
+                with conn.cursor() as cursor:
+                    insert_earthquake_data(data, cursor)
+                conn.commit()
+        except Exception as e:
+            raise RuntimeError(f"Failed to load earthquake data: {e}")
 
     extract_task = PythonOperator(
         task_id="extract_earthquake_data",
         python_callable=extract_data,
-        provide_context=True
     )
 
     load_task = PythonOperator(
         task_id="load_to_postgres",
         python_callable=load_data,
-        provide_context=True
     )
 
     extract_task >> load_task
