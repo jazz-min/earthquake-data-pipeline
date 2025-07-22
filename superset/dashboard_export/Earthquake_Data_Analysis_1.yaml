@@ -1,0 +1,289 @@
+dashboard_title: Earthquake Data Analysis
+description: null
+css: ''
+slug: null
+certified_by: ''
+certification_details: ''
+published: true
+uuid: cd782fe6-8847-4d90-916b-47b8edcebf8c
+position:
+  CHART-5iZC4Os5agUZv1p0xOYnl:
+    children: []
+    id: CHART-5iZC4Os5agUZv1p0xOYnl
+    meta:
+      chartId: 6
+      height: 50
+      sliceName: Top 10 Strongest Earthquakes
+      uuid: 92116963-619f-4566-9965-5f4c051301cd
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-Sqw2EpSIznuFhn-jCeC2m
+    type: CHART
+  CHART-IHSAOFmWWtavv28vuJII2:
+    children: []
+    id: CHART-IHSAOFmWWtavv28vuJII2
+    meta:
+      chartId: 10
+      height: 50
+      sliceName: Earthquake Magnitude Distribution - Histogram
+      uuid: 872161b1-738f-4429-a78e-82a940288da8
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-f3FnhAXDn64Dow1NnfDhw
+    type: CHART
+  CHART-LirrmJ-GvyIZ8Rx6ltbj-:
+    children: []
+    id: CHART-LirrmJ-GvyIZ8Rx6ltbj-
+    meta:
+      chartId: 7
+      height: 50
+      sliceName: Average Earthquake Depth by Region
+      uuid: 75136c01-b9dd-4cb7-a635-2c07d567f61d
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-j8z-b67O_0c8ZdlT96q3K
+    type: CHART
+  CHART-NzQb67kFVrpwJXLTGJGDm:
+    children: []
+    id: CHART-NzQb67kFVrpwJXLTGJGDm
+    meta:
+      chartId: 11
+      height: 50
+      sliceName: Most Active Earthquake Regions
+      uuid: 90653820-c184-4ff5-9cb9-9409be07cb99
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-j8z-b67O_0c8ZdlT96q3K
+    type: CHART
+  CHART-WfoxuAXtQOEDXA6Azrrma:
+    children: []
+    id: CHART-WfoxuAXtQOEDXA6Azrrma
+    meta:
+      chartId: 2
+      height: 50
+      sliceName: Daily Earthquake Counts
+      uuid: 41106d57-9142-4766-9457-f289bbc1bfcd
+      width: 5
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-Sqw2EpSIznuFhn-jCeC2m
+    type: CHART
+  CHART-hz_IZvMEFk42p5I5J1s6A:
+    children: []
+    id: CHART-hz_IZvMEFk42p5I5J1s6A
+    meta:
+      chartId: 1
+      height: 50
+      sliceName: Global Earthquake Map
+      uuid: 405564d2-87db-457c-8e63-f7f67344aec2
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-f3FnhAXDn64Dow1NnfDhw
+    type: CHART
+  CHART-n02DKe8XuAN_vWUyYa5lu:
+    children: []
+    id: CHART-n02DKe8XuAN_vWUyYa5lu
+    meta:
+      chartId: 3
+      height: 50
+      sliceName: 'Heatmap: Earthquakes by Month and Region'
+      uuid: 3c1dea0b-54bd-421e-8c42-78332f334f62
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-f3FnhAXDn64Dow1NnfDhw
+    type: CHART
+  CHART-oX56F5EJqE9cWiC9h1EUS:
+    children: []
+    id: CHART-oX56F5EJqE9cWiC9h1EUS
+    meta:
+      chartId: 8
+      height: 50
+      sliceName: Monthly Trend of Earthquakes (YoY)
+      uuid: 7767c7d7-cc3f-4a40-8e94-61c5bbe78a81
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-j8z-b67O_0c8ZdlT96q3K
+    type: CHART
+  CHART-veV6Zy7PxjSPrmgVQFqKA:
+    children: []
+    id: CHART-veV6Zy7PxjSPrmgVQFqKA
+    meta:
+      chartId: 4
+      height: 50
+      sliceName: High Magnitude Quake Percent
+      uuid: b9f67f55-9381-467f-9f1a-8f74147f728f
+      width: 3
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-Sqw2EpSIznuFhn-jCeC2m
+    type: CHART
+  DASHBOARD_VERSION_KEY: v2
+  GRID_ID:
+    children:
+    - ROW-Sqw2EpSIznuFhn-jCeC2m
+    - ROW-j8z-b67O_0c8ZdlT96q3K
+    - ROW-f3FnhAXDn64Dow1NnfDhw
+    id: GRID_ID
+    parents:
+    - ROOT_ID
+    type: GRID
+  HEADER_ID:
+    id: HEADER_ID
+    meta:
+      text: Earthquake Data Analysis
+    type: HEADER
+  ROOT_ID:
+    children:
+    - GRID_ID
+    id: ROOT_ID
+    type: ROOT
+  ROW-Sqw2EpSIznuFhn-jCeC2m:
+    children:
+    - CHART-5iZC4Os5agUZv1p0xOYnl
+    - CHART-WfoxuAXtQOEDXA6Azrrma
+    - CHART-veV6Zy7PxjSPrmgVQFqKA
+    id: ROW-Sqw2EpSIznuFhn-jCeC2m
+    meta:
+      background: BACKGROUND_TRANSPARENT
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    type: ROW
+  ROW-f3FnhAXDn64Dow1NnfDhw:
+    children:
+    - CHART-n02DKe8XuAN_vWUyYa5lu
+    - CHART-hz_IZvMEFk42p5I5J1s6A
+    - CHART-IHSAOFmWWtavv28vuJII2
+    id: ROW-f3FnhAXDn64Dow1NnfDhw
+    meta:
+      background: BACKGROUND_TRANSPARENT
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    type: ROW
+  ROW-j8z-b67O_0c8ZdlT96q3K:
+    children:
+    - CHART-oX56F5EJqE9cWiC9h1EUS
+    - CHART-LirrmJ-GvyIZ8Rx6ltbj-
+    - CHART-NzQb67kFVrpwJXLTGJGDm
+    id: ROW-j8z-b67O_0c8ZdlT96q3K
+    meta:
+      background: BACKGROUND_TRANSPARENT
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    type: ROW
+metadata:
+  chart_configuration:
+    '2':
+      id: 2
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 1
+        - 3
+        - 4
+        - 6
+        - 7
+        - 8
+        - 10
+        - 11
+    '6':
+      id: 6
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 7
+        - 8
+        - 10
+        - 11
+    '7':
+      id: 7
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 6
+        - 8
+        - 10
+        - 11
+    '8':
+      id: 8
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 6
+        - 7
+        - 10
+        - 11
+    '11':
+      id: 11
+      crossFilters:
+        scope: global
+        chartsInScope:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 6
+        - 7
+        - 8
+        - 10
+  global_chart_configuration:
+    scope:
+      rootPath:
+      - ROOT_ID
+      excluded: []
+    chartsInScope:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 6
+    - 7
+    - 8
+    - 10
+    - 11
+  map_label_colors:
+    SUM(quake_count): '#1FA8C9'
+    MAX(magnitude): '#1FA8C9'
+    MAX(avg_depth_km): '#1FA8C9'
+    magnitude: '#1FA8C9'
+  shared_label_colors:
+  - SUM(quake_count)
+  color_scheme: ''
+  refresh_frequency: 0
+  color_scheme_domain: []
+  expanded_slices: {}
+  label_colors: {}
+  timed_refresh_immune_slices: []
+  cross_filters_enabled: true
+  default_filters: '{}'
+version: 1.0.0

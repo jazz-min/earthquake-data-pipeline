@@ -1,0 +1,35 @@
+slice_name: Earthquake Magnitude Distribution - Histogram
+description: null
+certified_by: null
+certification_details: null
+viz_type: histogram_v2
+params:
+  datasource: 9__table
+  viz_type: histogram_v2
+  column: magnitude
+  groupby: []
+  adhoc_filters:
+  - clause: WHERE
+    subject: time
+    operator: TEMPORAL_RANGE
+    comparator: No filter
+    expressionType: SIMPLE
+  row_limit: 10000
+  bins: 5
+  x_axis_title: Magnitude - Binned
+  x_axis_title_margin: 15
+  y_axis_title: Number of Earthquakes
+  y_axis_title_margin: 15
+  y_axis_title_position: Left
+  color_scheme: supersetColors
+  show_legend: true
+  extra_form_data: {}
+  dashboards: []
+query_context: '{"datasource":{"id":9,"type":"table"},"force":false,"queries":[{"filters":[{"col":"time","op":"TEMPORAL_RANGE","val":"No
+  filter"}],"extras":{"having":"","where":""},"applied_time_extras":{},"columns":["magnitude"],"annotation_layers":[],"row_limit":10000,"series_limit":0,"order_desc":true,"url_params":{},"custom_params":{},"custom_form_data":{},"post_processing":[{"operation":"histogram","options":{"column":"magnitude","groupby":[],"bins":5}}]}],"form_data":{"datasource":"9__table","viz_type":"histogram_v2","column":"magnitude","groupby":[],"adhoc_filters":[{"clause":"WHERE","subject":"time","operator":"TEMPORAL_RANGE","comparator":"No
+  filter","expressionType":"SIMPLE"}],"row_limit":10000,"bins":5,"x_axis_title":"Magnitude
+  - Binned","x_axis_title_margin":15,"y_axis_title":"Number of Earthquakes","y_axis_title_margin":15,"y_axis_title_position":"Left","color_scheme":"supersetColors","show_legend":true,"extra_form_data":{},"dashboards":[],"force":false,"result_format":"json","result_type":"full"},"result_format":"json","result_type":"full"}'
+cache_timeout: null
+uuid: 872161b1-738f-4429-a78e-82a940288da8
+version: 1.0.0
+dataset_uuid: 3b28cd2b-eb8a-40cb-aab4-c8f05c793290
