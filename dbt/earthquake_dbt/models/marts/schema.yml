@@ -2,53 +2,106 @@ version: 2
 
 models:
   - name: agg_daily_counts
-    description: "Aggregated count of earthquakes per day"
+    description: "Daily count of earthquakes for line chart visualization"
     columns:
       - name: date
-        description: "Date of the earthquake occurrences"
+        description: "Date of earthquake occurrence (YYYY-MM-DD)"
       - name: quake_count
-        description: "Number of earthquakes on the given date"
+        description: "Total number of earthquakes on the given date"
 
   - name: agg_top10_magnitude
     description: "Top 10 strongest earthquakes by magnitude"
     columns:
       - name: id
-        description: "Unique ID of the earthquake"
+        description: "Unique identifier for the earthquake event"
       - name: time
-        description: "Timestamp of the earthquake"
+        description: "Timestamp of the earthquake (UTC)"
       - name: place
-        description: "Location of the earthquake"
+        description: "Location description of the earthquake"
       - name: magnitude
         description: "Magnitude of the earthquake"
+      - name: latitude
+        description: "Latitude coordinate"
+      - name: longitude
+        description: "Longitude coordinate"
+      - name: depth_km
+        description: "Depth of earthquake in kilometers"
 
   - name: agg_magnitude_distribution
-    description: "Histogram-style frequency of earthquake magnitudes"
+    description: "Distribution of earthquakes by magnitude for histogram visualization"
     columns:
       - name: magnitude
-        description: "Magnitude bucket"
+        description: "Magnitude of the earthquake"
       - name: freq
-        description: "Number of earthquakes with this magnitude"
+        description: "Frequency/count of earthquakes for each magnitude"
 
   - name: agg_heatmap_region_month
-    description: "Monthly earthquake counts per region for heatmap charts"
+    description: "Monthly earthquake activity by region for heatmap charts"
     columns:
       - name: place
-        description: "Location or region name"
+        description: "Region/location name"
       - name: year_month
-        description: "Month (YYYY-MM)"
+        description: "Year and month in format YYYY-MM"
       - name: quake_count
-        description: "Number of earthquakes in that region/month"
+        description: "Number of earthquakes in that region during the month"
 
   - name: agg_high_mag_percent
-    description: "Percentage of earthquakes with magnitude >= 5.0"
+    description: "Percentage of high-magnitude earthquakes (magnitude ≥ 5.0)"
     columns:
       - name: high_mag_pct
-        description: "Percentage of high-magnitude earthquakes"
+        description: "Percentage of earthquakes with magnitude ≥ 5.0"
 
   - name: avg_depth_by_region
-    description: "Average depth of earthquakes by region"
+    description: "Average earthquake depth by region"
     columns:
       - name: place
         description: "Region/location name"
       - name: avg_depth_km
-        description: "Average earthquake depth in kilometers"
+        description: "Average earthquake depth in kilometers (rounded to 2 decimals)"
+
+  - name: global_quake_map
+    description: "Location of all earthquakes for global map visualization"
+    columns:
+      - name: id
+        description: "Unique identifier for the earthquake event"
+      - name: time
+        description: "Timestamp of the earthquake"
+      - name: place
+        description: "Location or region name"
+      - name: magnitude
+        description: "Magnitude of the earthquake"
+      - name: latitude
+        description: "Latitude coordinate"
+      - name: longitude
+        description: "Longitude coordinate"
+      - name: depth_km
+        description: "Depth of earthquake in kilometers"
+
+  - name: monthly_earthquake_trend
+    description: "Monthly earthquake counts for trend comparison over years"
+    columns:
+      - name: year
+        description: "Year of earthquake occurrence"
+      - name: month
+        description: "Month of earthquake occurrence (1–12)"
+      - name: quake_count
+        description: "Number of earthquakes in that month"
+      - name: year_month
+        description: "Formatted year-month string (YYYY-MM)"
+
+  - name: most_active_regions
+    description: "Top regions with the most earthquake occurrences"
+    columns:
+      - name: place
+        description: "Region/location0- name"
+      - name: quake_count
+        description: "Total number of earthquakes in that region"
+
+
+
+
+
+
+
+
+

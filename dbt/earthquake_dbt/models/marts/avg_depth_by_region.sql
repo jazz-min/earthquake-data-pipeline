@@ -1,6 +1,9 @@
-select
+-- Average Depth by Region
+-- Bar chart: Avg depth per region
+
+SELECT
   place,
-  round(avg(depth_km)::numeric, 2)  as avg_depth_km
-from {{ ref('stg_earthquakes') }}
-group by place
-order by avg_depth_km desc
+  ROUND(AVG(depth_km)::NUMERIC, 2) AS avg_depth_km
+FROM {{ ref('stg_earthquakes') }}
+GROUP BY place
+ORDER BY avg_depth_km DESC

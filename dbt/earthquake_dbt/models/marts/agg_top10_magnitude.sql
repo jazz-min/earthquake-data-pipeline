@@ -1,6 +1,13 @@
---- top 10 strongest
+--- top 10 strongest Earthquakes
 
-select *
-from {{ ref('stg_earthquakes') }}
-order by magnitude desc
-limit 10
+SELECT
+  id,
+  time,
+  place,
+  longitude,
+  latitude,
+  magnitude,
+  depth_km
+FROM {{ ref('stg_earthquakes') }}
+ORDER BY magnitude DESC
+LIMIT 10
