@@ -6,6 +6,7 @@ airflow-webserver.pid
 airflow.cfg
 logs/
 webserver_config.py
+airflow.db
 
 
 # Python specific files and directories
@@ -15,7 +16,6 @@ __pycache__/
 .idea/
 
 .env
-requirements.txt
 
 #dbt files
 dbt/dbt_packages/
