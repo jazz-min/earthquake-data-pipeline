@@ -50,15 +50,7 @@ graph LR
 │   │   ├── macros
 │   │   ├── models
 │   │   │   ├── marts
-│   │   │   │   ├── agg_daily_counts.sql
-│   │   │   │   ├── agg_heatmap_region_month.sql
-│   │   │   │   ├── agg_high_mag_percent.sql
-│   │   │   │   ├── agg_magnitude_distribution.sql
-│   │   │   │   ├── agg_top10_magnitude.sql
-│   │   │   │   ├── avg_depth_by_region.sql
-│   │   │   │   ├── global_quake_map.sql
-│   │   │   │   ├── monthly_earthquake_trend.sql
-│   │   │   │   ├── most_active_regions.sql
+│   │   │   │   ├── *.sql
 │   │   │   │   └── schema.yml
 │   │   │   └── staging
 │   │   │       ├── schema.yml
@@ -73,15 +65,7 @@ graph LR
 │   └── Dockerfile
 └── superset
     ├── charts_export      # (Optional) Superset chart yaml
-    │   ├── Average_Earthquake_Depth_by_Region_7.yaml
-    │   ├── Daily_Earthquake_Counts_2.yaml
-    │   ├── Earthquake_Magnitude_Distribution_-_Histogram_10.yaml
-    │   ├── Global_Earthquake_Map_1.yaml
-    │   ├── Heatmap_Earthquakes_by_Month_and_Region_3.yaml
-    │   ├── High_Magnitude_Quake_Percent_4.yaml
-    │   ├── Monthly_Trend_of_Earthquakes_YoY_8.yaml
-    │   ├── Most_Active_Earthquake_Regions_11.yaml
-    │   └── Top_10_Strongest_Earthquakes_6.yaml
+    │   ├── *.yaml
     ├── dashboard_export  # (Optional) Superset dashboard yaml
     │   └── Earthquake_Data_Analysis_1.yaml
     └── superset-init.sh        # Initialization script
@@ -92,6 +76,7 @@ graph LR
 ├── Dockerfile.superset
 ├── docker-compose.yml
 ├── .env
+├── requirements.txt
 └── README.md
 ```
 
@@ -109,7 +94,7 @@ cd earthquake-data-pipeline
 
 ### 2. Set Environment Variables
 
-Create a `.env` file in the root directory with the following variables:
+Create a `.env` file in the root directory with the following variables. Replace the sample values with your actual credentials.
 
 ```env
 # Postgres DB / dbt DB
@@ -161,13 +146,6 @@ docker compose run airflow-init
 docker compose up -d
 ```
 Wait for a few seconds/minutes for all services (Airflow, Postgres, Superset) to be fully available
-
-
-### 5. Initialize Superset (if not already)
-
-```bash
-docker exec -it superset /bin/bash /app/superset-init.sh
-```
 
 ---
 
@@ -261,7 +239,7 @@ docker exec -it airflow-webserver dbt run
 docker exec -it airflow-webserver dbt debug
 
 ```
-### To build dbt docker image compatible with Mac M1:
+### To build dbt docker image compatible with Mac Silicon:
 ```bash
  docker build --platform linux/arm64 dbt-postgres-arm64 .
 ```
@@ -276,8 +254,8 @@ docker exec -it airflow-webserver dbt debug
 
 
 ## 📝 License
+![MIT License](LICENSE)
 
-MIT License
 
 ---
 
