@@ -129,6 +129,27 @@ services:
     depends_on:
       - superset-db
 
+  # Earthquake API
+  earthquake-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: earthquake-api
+    restart: always
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 volumes:
   pgdata:
   pgadmin-data:
