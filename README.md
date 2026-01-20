@@ -1,6 +1,6 @@
 # Earthquake Data Pipeline with Airflow, dbt & Superset
 
-This project is an end-to-end data pipeline that fetches real-time earthquake data from the [USGS Earthquake API](https://earthquake.usgs.gov/fdsnws/event/1/), processes it through Airflow, transforms it using dbt, and visualizes key insights through Apache Superset.
+This project is an end-to-end data pipeline that fetches real-time earthquake data from the [USGS Earthquake API](https://earthquake.usgs.gov/fdsnws/event/1/), processes it through Airflow, transforms it using dbt, and visualizes key insights through Apache Superset. It also includes a FastAPI REST service that provides programmatic access to earthquake data with circuit breaker protection and Prometheus metrics for observability.
 The dashboard helps monitor seismic activity, identify trends over time, and surface insights by region.
 
 ---
