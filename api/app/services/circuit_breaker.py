@@ -2,6 +2,12 @@ import threading
 import time
 from enum import Enum
 
+from app.metrics import (
+    STATE_VALUES,
+    circuit_breaker_failure_count,
+    circuit_breaker_state,
+)
+
 
 class CircuitState(Enum):
     CLOSED = "closed"
@@ -52,6 +58,11 @@ class CircuitBreaker:
             else:  # OPEN
                 return False
 
+    def _emit_metrics(self) -> None:
+        """Emit current state to Prometheus metrics."""
+        circuit_breaker_state.set(STATE_VALUES.get(self._state.value, 0))
+        circuit_breaker_failure_count.set(self._failure_count)
+
     def record_success(self) -> None:
         """Record a successful call."""
         with self._lock:
@@ -59,6 +70,7 @@ class CircuitBreaker:
                 self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = None
+            self._emit_metrics()
 
     def record_failure(self) -> None:
         """Record a failed call."""
@@ -71,6 +83,7 @@ class CircuitBreaker:
             elif self._state == CircuitState.CLOSED:
                 if self._failure_count >= self._failure_threshold:
                     self._state = CircuitState.OPEN
+            self._emit_metrics()
 
     def reset(self) -> None:
         """Reset the circuit breaker to initial state."""
@@ -78,6 +91,7 @@ class CircuitBreaker:
             self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = None
+            self._emit_metrics()
 
     def get_status(self) -> dict:
         """Get current circuit breaker status."""

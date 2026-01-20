@@ -102,6 +102,46 @@ Response includes:
 - `breaker_state` - Circuit breaker state: `closed`, `open`, `half_open`
 - `fallback_reason` - Reason for fallback if applicable
 
+## Metrics
+
+**GET /metrics**
+
+Prometheus metrics endpoint exposing HTTP request metrics and custom application metrics.
+
+```bash
+curl http://localhost:8000/metrics
+```
+
+### Available Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `http_request_duration_seconds` | Histogram | HTTP request latency (use for avg/p95/p99) |
+| `http_requests_total` | Counter | Total HTTP requests by method, path, status |
+| `circuit_breaker_state` | Gauge | Circuit breaker state (0=closed, 1=open, 2=half_open) |
+| `circuit_breaker_failure_count` | Gauge | Current consecutive failure count |
+| `usgs_request_duration_seconds` | Histogram | Duration of USGS API requests |
+| `usgs_requests_total` | Counter | Total USGS requests by status (success, failure, timeout, rate_limited) |
+
+### Example Prometheus Queries
+
+```promql
+# Average response time
+rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m])
+
+# p95 response time
+histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
+
+# p99 response time
+histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))
+
+# Circuit breaker state
+circuit_breaker_state
+
+# USGS error rate
+rate(usgs_requests_total{status!="success"}[5m])
+```
+
 ## Running with Docker Compose
 
 ```bash

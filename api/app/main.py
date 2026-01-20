@@ -3,6 +3,7 @@ from typing import Annotated, Literal
 
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.openapi.docs import get_redoc_html
+from prometheus_fastapi_instrumentator import Instrumentator
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -35,6 +36,12 @@ async def redoc_html():
         title=f"{app.title} - ReDoc",
         redoc_js_url="https://cdn.jsdelivr.net/npm/redoc@2.1.3/bundles/redoc.standalone.js",
     )
+
+
+# Prometheus metrics instrumentation
+Instrumentator(
+    excluded_handlers=["/metrics", "/health"],
+).instrument(app).expose(app, include_in_schema=False)
 
 # Global circuit breaker instance
 circuit_breaker = CircuitBreaker(

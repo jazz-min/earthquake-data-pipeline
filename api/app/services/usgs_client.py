@@ -3,6 +3,7 @@ from datetime import datetime
 
 import httpx
 
+from app.metrics import usgs_request_duration_seconds, usgs_requests_total
 from app.schemas import EarthquakeItem
 from app.settings import settings
 
@@ -59,29 +60,46 @@ def fetch_earthquakes(
     backoff_times = [0.5, 1.0]  # Exponential backoff delays
 
     for attempt in range(settings.usgs_retry_max + 1):
+        request_start = time.monotonic()
         try:
             with httpx.Client(timeout=settings.usgs_timeout_secs) as client:
                 response = client.get(settings.usgs_base_url, params=params)
 
+                duration = time.monotonic() - request_start
+                usgs_request_duration_seconds.observe(duration)
+
                 if response.status_code == 429:
+                    usgs_requests_total.labels(status="rate_limited").inc()
                     raise USGSClientError("Rate limited by USGS API")
 
                 if response.status_code >= 500:
+                    usgs_requests_total.labels(status="failure").inc()
                     raise USGSClientError(f"USGS API server error: {response.status_code}")
 
                 response.raise_for_status()
                 data = response.json()
 
+                usgs_requests_total.labels(status="success").inc()
                 return _parse_geojson_features(data.get("features", []))
 
         except httpx.TimeoutException as e:
+            duration = time.monotonic() - request_start
+            usgs_request_duration_seconds.observe(duration)
+            usgs_requests_total.labels(status="timeout").inc()
             last_exception = USGSClientError(f"Request timeout: {e}")
         except httpx.HTTPStatusError as e:
+            duration = time.monotonic() - request_start
+            usgs_request_duration_seconds.observe(duration)
+            usgs_requests_total.labels(status="failure").inc()
             last_exception = USGSClientError(f"HTTP error: {e}")
         except httpx.RequestError as e:
+            duration = time.monotonic() - request_start
+            usgs_request_duration_seconds.observe(duration)
+            usgs_requests_total.labels(status="failure").inc()
             last_exception = USGSClientError(f"Request error: {e}")
-        except USGSClientError as e:
-            last_exception = e
+        except USGSClientError:
+            # Already tracked above (rate_limited or server error)
+            raise
 
         # Apply backoff before retry (if not last attempt)
         if attempt < settings.usgs_retry_max and attempt < len(backoff_times):
