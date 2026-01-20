@@ -2,6 +2,12 @@
 
 A FastAPI service providing read-only access to earthquake data from a Postgres database, with an optional live endpoint that fetches data from the USGS API with circuit breaker protection.
 
+## API Specification
+
+* Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
+* ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+* OpenAPI JSON: [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json)
+
 ## Endpoints
 
 ### Health & Readiness

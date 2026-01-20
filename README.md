@@ -207,6 +207,11 @@ curl "http://localhost:8000/earthquakes?min_magnitude=4.0&limit=10"
 curl "http://localhost:8000/earthquakes/live?min_magnitude=5.0&limit=5"
 ```
 
+**API Documentation:**
+* Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
+* ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+* OpenAPI JSON: [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json)
+
 For full documentation, see [api/README.md](api/README.md).
 
 ---

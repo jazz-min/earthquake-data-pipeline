@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Annotated, Literal
 
 from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi.openapi.docs import get_redoc_html
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -21,7 +22,18 @@ app = FastAPI(
     title="Earthquake API",
     description="Read-only API for earthquake data from Postgres with optional live USGS data",
     version="1.0.0",
+    redoc_url=None,  # Disable default ReDoc to use custom route
 )
+
+
+@app.get("/redoc", include_in_schema=False)
+async def redoc_html():
+    """Custom ReDoc endpoint with stable CDN version."""
+    return get_redoc_html(
+        openapi_url=app.openapi_url,
+        title=f"{app.title} - ReDoc",
+        redoc_js_url="https://cdn.jsdelivr.net/npm/redoc@2.1.3/bundles/redoc.standalone.js",
+    )
 
 # Global circuit breaker instance
 circuit_breaker = CircuitBreaker(
