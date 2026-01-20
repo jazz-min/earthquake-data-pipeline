@@ -41,3 +41,12 @@ class HealthResponse(BaseModel):
 class ReadyResponse(BaseModel):
     status: str
     db: str
+
+
+class CircuitBreakerStatusResponse(BaseModel):
+    state: str  # "closed", "open", "half_open"
+    failure_count: int
+    failure_threshold: int
+    recovery_secs: int
+    seconds_until_recovery: float | None  # Only when state is "open"
+    allowing_requests: bool

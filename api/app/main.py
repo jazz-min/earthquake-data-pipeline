@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.repositories import earthquakes as earthquake_repo
 from app.schemas import (
+    CircuitBreakerStatusResponse,
     EarthquakeDetailResponse,
     EarthquakeListResponse,
     HealthResponse,
@@ -56,6 +57,12 @@ def ready(db: Session = Depends(get_db)):
         return ReadyResponse(status="ok", db="ok")
     except Exception:
         return ReadyResponse(status="degraded", db="down")
+
+
+@app.get("/circuit-breaker/status", response_model=CircuitBreakerStatusResponse)
+def circuit_breaker_status():
+    """Get current circuit breaker state and metrics."""
+    return CircuitBreakerStatusResponse(**circuit_breaker.get_status())
 
 
 @app.get("/earthquakes", response_model=EarthquakeListResponse)

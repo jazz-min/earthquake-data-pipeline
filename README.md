@@ -191,6 +191,7 @@ The project includes a FastAPI service that provides read-only access to earthqu
 |----------|-------------|
 | `GET /health` | Health check |
 | `GET /ready` | Database connectivity check |
+| `GET /circuit-breaker/status` | Circuit breaker state and metrics |
 | `GET /earthquakes` | List earthquakes with filtering & pagination |
 | `GET /earthquakes/{id}` | Get single earthquake by ID |
 | `GET /earthquakes/live` | Live USGS data with circuit breaker fallback |

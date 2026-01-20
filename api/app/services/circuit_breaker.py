@@ -78,3 +78,21 @@ class CircuitBreaker:
             self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = None
+
+    def get_status(self) -> dict:
+        """Get current circuit breaker status."""
+        with self._lock:
+            self._check_recovery()
+            seconds_until_recovery = None
+            if self._state == CircuitState.OPEN and self._last_failure_time:
+                elapsed = time.time() - self._last_failure_time
+                seconds_until_recovery = max(0, self._recovery_secs - elapsed)
+
+            return {
+                "state": self._state.value,
+                "failure_count": self._failure_count,
+                "failure_threshold": self._failure_threshold,
+                "recovery_secs": self._recovery_secs,
+                "seconds_until_recovery": seconds_until_recovery,
+                "allowing_requests": self._state != CircuitState.OPEN,
+            }

@@ -24,6 +24,25 @@ curl http://localhost:8000/ready
 # {"status":"ok","db":"ok"}
 ```
 
+### Circuit Breaker
+
+**GET /circuit-breaker/status**
+
+Get the current state and metrics of the circuit breaker without triggering a USGS request.
+
+```bash
+curl http://localhost:8000/circuit-breaker/status
+# {"state":"closed","failure_count":0,"failure_threshold":5,"recovery_secs":60,"seconds_until_recovery":null,"allowing_requests":true}
+```
+
+Response fields:
+- `state` - Current state: `closed`, `open`, `half_open`
+- `failure_count` - Number of consecutive failures
+- `failure_threshold` - Failures required to open the circuit
+- `recovery_secs` - Configured recovery timeout
+- `seconds_until_recovery` - Time until circuit transitions to half_open (only when open)
+- `allowing_requests` - Whether requests to USGS are currently allowed
+
 ### Earthquake Data
 
 **GET /earthquakes**
