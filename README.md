@@ -11,6 +11,7 @@ The dashboard helps monitor seismic activity, identify trends over time, and sur
 * **Ingestion**: Apache Airflow (daily automated DAG)
 * **Transformation**: dbt (data modeling + aggregations)
 * **Storage**: PostgreSQL
+* **API**: FastAPI REST service with circuit breaker protection
 * **Visualization**: Apache Superset (interactive dashboard)
 * **Deployment**: Docker Compose
 
@@ -21,9 +22,10 @@ The dashboard helps monitor seismic activity, identify trends over time, and sur
 * **Apache Airflow** (LocalExecutor mode)
 * **dbt (Data Build Tool)**
 * **PostgreSQL**
+* **FastAPI** (REST API with circuit breaker)
 * **Apache Superset**
 * **Docker + Docker Compose**
-* **Python 3.10**
+* **Python 3.10+**
 
 ---
 
@@ -32,6 +34,8 @@ The dashboard helps monitor seismic activity, identify trends over time, and sur
 ```mermaid
 graph LR
   API[USGS API] -->|Fetch JSON| Airflow -->|Load| Postgres -->|Transform| dbt --> Superset[Superset Dashboard]
+  Postgres -->|Query| FastAPI[Earthquake API]
+  API -->|Live Data| FastAPI
 ```
 
 ---
@@ -39,39 +43,51 @@ graph LR
 ## 🧱 Repository Structure
 
 ```bash
-├── dags         # Airflow DAGs
-│   ├── dbt_run_dag.py
-│   └── usgs_ingest_dag.py
+├── api                  # FastAPI Earthquake REST API
+│   ├── app
+│   │   ├── main.py              # API endpoints
+│   │   ├── settings.py          # Configuration
+│   │   ├── db.py                # Database connection
+│   │   ├── schemas.py           # Pydantic models
+│   │   ├── repositories         # Database queries
+│   │   └── services             # USGS client & circuit breaker
+│   ├── tests
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── README.md
+├── dags                 # Airflow DAGs
+│   ├── dbt_run_dag.py
+│   └── usgs_ingest_dag.py
 ├── dbt
-│   ├── earthquake_dbt
-│   │   ├── README.md
-│   │   ├── analyses
-│   │   ├── dbt_project.yml
-│   │   ├── macros
-│   │   ├── models
-│   │   │   ├── marts
-│   │   │   │   ├── *.sql
-│   │   │   │   └── schema.yml
-│   │   │   └── staging
-│   │   │       ├── schema.yml
-│   │   │       └── stg_earthquakes.sql
-│   │   ├── package-lock.yml
-│   │   ├── packages.yml
-│   │   ├── seeds
-│   │   ├── snapshots
-│   │   └── tests
-│   └── profiles.yml
-├── dbt-docker        #(Optional) needed only if you want to spin up a standalone dbt container
-│   └── Dockerfile
-└── superset
-    ├── charts_export      # (Optional) Superset chart yaml
-    │   ├── *.yaml
-    ├── dashboard_export  # (Optional) Superset dashboard yaml
-    │   └── Earthquake_Data_Analysis_1.yaml
-    └── superset-init.sh        # Initialization script
+│   ├── earthquake_dbt
+│   │   ├── README.md
+│   │   ├── analyses
+│   │   ├── dbt_project.yml
+│   │   ├── macros
+│   │   ├── models
+│   │   │   ├── marts
+│   │   │   │   ├── *.sql
+│   │   │   │   └── schema.yml
+│   │   │   └── staging
+│   │   │       ├── schema.yml
+│   │   │       └── stg_earthquakes.sql
+│   │   ├── package-lock.yml
+│   │   ├── packages.yml
+│   │   ├── seeds
+│   │   ├── snapshots
+│   │   └── tests
+│   └── profiles.yml
+├── dbt-docker           # (Optional) standalone dbt container
+│   └── Dockerfile
+├── superset
+│   ├── charts_export            # (Optional) Superset chart yaml
+│   │   └── *.yaml
+│   ├── dashboard_export         # (Optional) Superset dashboard yaml
+│   │   └── Earthquake_Data_Analysis_1.yaml
+│   └── superset-init.sh         # Initialization script
 ├── docs
-│   └── dashboard.jpg      # (Optional) Screenshots of the dashboard
-├── fetch_usgs_data.py            # Data fetching and insertion logic
+│   └── dashboard.jpg            # (Optional) Screenshots
+├── fetch_usgs_data.py           # Data fetching and insertion logic
 ├── Dockerfile.airflow
 ├── Dockerfile.superset
 ├── docker-compose.yml
@@ -166,12 +182,41 @@ The dashboard includes the following visualizations:
 
 ---
 
+## 🔌 Earthquake REST API
+
+The project includes a FastAPI service that provides read-only access to earthquake data with an optional live endpoint that fetches data directly from USGS with circuit breaker protection.
+
+**Endpoints:**
+| Endpoint | Description |
+|----------|-------------|
+| `GET /health` | Health check |
+| `GET /ready` | Database connectivity check |
+| `GET /earthquakes` | List earthquakes with filtering & pagination |
+| `GET /earthquakes/{id}` | Get single earthquake by ID |
+| `GET /earthquakes/live` | Live USGS data with circuit breaker fallback |
+
+**Quick Test:**
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# List recent significant earthquakes
+curl "http://localhost:8000/earthquakes?min_magnitude=4.0&limit=10"
+
+# Live data from USGS
+curl "http://localhost:8000/earthquakes/live?min_magnitude=5.0&limit=5"
+```
+
+For full documentation, see [api/README.md](api/README.md).
+
+---
 
 ### 4. Access UIs
 
 * Airflow: [http://localhost:8081](http://localhost:8081)
 * Superset: [http://localhost:8089](http://localhost:8089)
 * pgAdmin: [http://localhost:8080](http://localhost:8080)
+* Earthquake API: [http://localhost:8000](http://localhost:8000)
 
 ---
 
@@ -210,6 +255,7 @@ docker exec -it airflow-webserver airflow dags trigger usgs_earthquake_etl \
 * Hands-on ETL using Airflow's PythonOperator
 * Data modeling and transformation using dbt
 * Dashboard building and filtering in Superset
+* REST API development with FastAPI and circuit breaker pattern
 * Dockerized, local-first development workflow
 
 ---
@@ -262,7 +308,7 @@ docker exec -it airflow-webserver dbt debug
 ## 🙌 Acknowledgments
 
 * [USGS Earthquake API](https://earthquake.usgs.gov/fdsnws/event/1/)
-* Apache Airflow, dbt, Superset
+* Apache Airflow, dbt, Superset, FastAPI
 
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
 ![Airflow](https://img.shields.io/badge/Airflow-2.7+-brightgreen)
